@@ -3,6 +3,7 @@ package services
 import model.LogEntry
 import java.util
 import io.{BufferedSource, Source}
+import collection.mutable
 
 object LogParser {
 
@@ -11,13 +12,14 @@ object LogParser {
   }
 
   def extractTimings(source: BufferedSource) = {
-    val list: util.ArrayList[LogEntry] = new util.ArrayList[LogEntry]()
+    val list: mutable.ArrayBuffer[LogEntry] = new mutable.ArrayBuffer[LogEntry]()
     source.getLines() foreach { line =>
       if (line.contains("took")) {
         println(line)
         val M = """.* \[\d+ \S+ \d+ (\S+)] .* (\S+) took (\d+).*""".r
         val M (timestamp, serviceName, duration) = line
-        list.add(new LogEntry(serviceName, timestamp, duration.toLong))
+        val entry = new LogEntry(serviceName, timestamp, duration.toLong)
+        list.+=(entry)
       }
     }
     list

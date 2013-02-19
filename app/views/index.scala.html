@@ -1,7 +1,60 @@
-@(message: String)
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Flot</title>
+    <link href="http://www.flotcharts.org/flot/examples/examples.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="http://www.flotcharts.org/flot/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="http://www.flotcharts.org/flot/jquery.flot.js"></script>
 
-@main("Welcome to Play 2.1") {
-    
-    @play20.welcome(message)
-    
-}
+    <script type="text/javascript">
+
+        $(function() {
+
+            var options = {
+                lines: {
+                    show: true
+                },
+                points: {
+                    show: false
+                },
+                xaxis: {
+                    tickDecimals: 0,
+                    tickSize: 10
+                }
+            };
+
+            var data = [];
+
+            $("button.dataUpdate").click(function () {
+
+                data = [];
+
+                $.plot("#placeholder", data, options);
+
+                function onDataReceived(series) {
+                    $.plot("#placeholder", [series.data], options);
+                }
+
+                $.ajax({
+                    url: "http://localhost:9000/timings",
+                    type: "GET",
+                    dataType: "json",
+                    success: onDataReceived
+                });
+
+            });
+        });
+
+    </script>
+</head>
+<body>
+
+<div id="content">
+    <div class="demo-container">
+        <div id="placeholder" class="demo-placeholder"></div>
+    </div>
+    <p><button class="dataUpdate">Poll for data</button></p>
+</div>
+
+</body>
+</html>
