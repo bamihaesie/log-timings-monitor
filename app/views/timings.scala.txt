@@ -1,0 +1,6 @@
+@(timings: List[(String, collection.mutable.ArrayBuffer[model.LogEntry])])
+
+[@for(t <- timings) {
+  { "label" : "@t._1", "data" : [@for((e,i) <- t._2.zipWithIndex) {[@e.getMinute, @e.duration]@if(i != t._2.size - 1) {,}}]
+  }@if(timings(timings.size - 1) != t){,}
+}]

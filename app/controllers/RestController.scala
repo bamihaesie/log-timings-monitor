@@ -2,23 +2,25 @@ package controllers
 
 import play.api.mvc._
 import services.LogParser
-import io.BufferedSource
-import java.io.{File, FileInputStream}
 import model.LogEntry
-import play.api.libs.json._
 import collection.mutable.ArrayBuffer
 
 object RestController extends Controller {
   
-  def timings = Action {
-    val source: BufferedSource = new BufferedSource(new FileInputStream(new File("test/resources/tomcat-ocp.log.txt")))
-    val timings: ArrayBuffer[LogEntry] = LogParser.extractTimings(source)
+  def timings (source: String) = Action {
+    val timings: ArrayBuffer[LogEntry] = LogParser.extractTimingsFromUrl(source)
+    val timingsGroupedByServiceName: List[(String, ArrayBuffer[LogEntry])] = timings.groupBy(_.serviceName).toList
 
-    val pairs = timings.zipWithIndex.map( pair => Seq(pair._2 + 1, pair._1.duration))
+    timingsGroupedByServiceName.foreach{
+      case (service, lst) => {
+        val skew = 60 - lst(0).getMinute()
+        lst.foreach{
+          item => item.setMinute((item.getMinute() + skew) % 60)
+        }
+      }
+    }
 
-    val json = Json.obj("label" -> "test", "data" -> pairs)
-
-    Ok(Json.toJson(json)).as("application/json")
+    Ok(views.txt.timings(timingsGroupedByServiceName.toList))
   }
 
 }

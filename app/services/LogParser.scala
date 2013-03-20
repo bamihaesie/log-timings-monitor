@@ -18,7 +18,7 @@ object LogParser {
         println(line)
         val M = """.* \[\d+ \S+ \d+ (\S+)] .* (\S+) took (\d+).*""".r
         val M (timestamp, serviceName, duration) = line
-        val entry = new LogEntry(serviceName, timestamp, duration.toLong)
+        val entry = new LogEntry(serviceName.replaceAll(",", ""), timestamp, duration.toLong)
         list.+=(entry)
       }
     }
