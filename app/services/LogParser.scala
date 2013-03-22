@@ -15,7 +15,7 @@ object LogParser {
     val list: mutable.ArrayBuffer[LogEntry] = new mutable.ArrayBuffer[LogEntry]()
     source.getLines() foreach { line =>
       if (line.contains("took")) {
-        println(line)
+//        println(line)
         val M = """.* \[\d+ \S+ \d+ (\S+)] .* (\S+) took (\d+).*""".r
         val M (timestamp, serviceName, duration) = line
         val entry = new LogEntry(serviceName.replaceAll(",", ""), timestamp, duration.toLong)

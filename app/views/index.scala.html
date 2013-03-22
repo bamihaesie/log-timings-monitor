@@ -2,9 +2,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Log Timings Monitor</title>
-    <link href="http://www.flotcharts.org/flot/examples/examples.css" rel="stylesheet" type="text/css">
-    <script language="javascript" type="text/javascript" src="http://www.flotcharts.org/flot/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="http://www.flotcharts.org/flot/jquery.flot.js"></script>
+    <link href="/assets/stylesheets/flot.css" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.js"></script>
+    <script language="javascript" type="text/javascript" src="/assets/javascripts/flot.js"></script>
 
     <script type="text/javascript">
 
@@ -23,18 +23,57 @@
                 }
             };
 
-            var data = [];
-
             $("button.dataUpdate").click(function () {
-
-                data = [];
 
                 source = $("#source").val();
 
-                $.plot("#placeholder", data, options);
-
                 function onDataReceived(series) {
-                    $.plot("#placeholder", series, options);
+
+                    // hard-code color indices to prevent them from shifting as countries are turned on/off
+
+                    var i = 0;
+                    $.each(series, function(key, val) {
+                        val.color = i;
+                        ++i;
+                    });
+
+                    // insert checkboxes
+                    var choiceContainer = $("#choices");
+                    $.each(series, function(key, val) {
+                        choiceContainer.append("<br/><input type='checkbox' name='" + key +
+                                "' checked='checked' id='id" + key + "'></input>" +
+                                "<label for='id" + key + "'>"
+                                + val.label + "</label>");
+                    });
+
+                    choiceContainer.find("input").click(plotAccordingToChoices);
+
+                    function plotAccordingToChoices() {
+
+                        var data = [];
+
+                        choiceContainer.find("input:checked").each(function () {
+                            var key = $(this).attr("name");
+                            if (key && series[key]) {
+                                data.push(series[key]);
+                            }
+                        });
+
+                        if (data.length > 0) {
+                            $.plot("#placeholder", data, {
+                                yaxis: {
+                                    min: 0
+                                },
+                                xaxis: {
+                                    tickDecimals: 0
+                                }
+                            });
+                        }
+                    }
+
+                    plotAccordingToChoices();
+
+                    //$.plot("#placeholder", series, options);
                 }
 
                 $.ajax({
@@ -53,7 +92,8 @@
 
 <div id="content">
     <div class="demo-container">
-        <div id="placeholder" class="demo-placeholder"></div>
+        <div id="placeholder" class="demo-placeholder" style="float:left; width:675px;"></div>
+        <p id="choices" style="float:right; width:135px;"></p>
     </div>
     <form>
         <input type="text" id="source" size="100" />
