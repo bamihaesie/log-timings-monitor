@@ -25,7 +25,7 @@
 
             $("button.dataUpdate").click(function () {
 
-                source = $("#source").val();
+                range = $("#range-selector").find(":selected").val();
 
                 function onDataReceived(series) {
 
@@ -77,7 +77,7 @@
                 }
 
                 $.ajax({
-                    url: "http://localhost:9000/timings?source=" + source,
+                    url: "http://localhost:9000/timings?range=" + range,
                     type: "GET",
                     dataType: "json",
                     success: onDataReceived
@@ -91,14 +91,30 @@
 <body>
 
 <div id="content">
+
+    <center><h3>Log Timings Monitor</h3></center>
+
+    <hr>
+
+    <table cellspacing="10" cellpadding="10">
+        <tr>
+            <td>Range:</td>
+            <td>
+                <select id="range-selector">
+                    <option value="0">Today</option>
+                </select>
+            </td>
+            <td><button class="dataUpdate">Extract Timings</button></td>
+        </tr>
+    </table>
+
+    <hr>
+
     <div class="demo-container">
         <div id="placeholder" class="demo-placeholder" style="float:left; width:675px;"></div>
         <p id="choices" style="float:right; width:135px;"></p>
     </div>
-    <form>
-        <input type="text" id="source" size="100" />
-    </form>
-    <p><button class="dataUpdate">Extract Timings</button></p>
+
 </div>
 
 </body>
