@@ -1,3 +1,5 @@
+@(args: IndexedSeq[String])
+
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -117,7 +119,9 @@
             <td>Range:</td>
             <td>
                 <select id="range-selector">
-                    <option value="0">Today</option>
+                    @for((item, ind) <- args.zipWithIndex) {
+                        <option value="@item">@item</option>
+                    }
                 </select>
             </td>
             <td><button class="dataUpdate">Extract Timings</button></td>
