@@ -29,51 +29,67 @@
 
                 function onDataReceived(series) {
 
-                    // hard-code color indices to prevent them from shifting as countries are turned on/off
-
-                    var i = 0;
-                    $.each(series, function(key, val) {
-                        val.color = i;
-                        ++i;
-                    });
-
-                    // insert checkboxes
                     var choiceContainer = $("#choices");
+
                     $.each(series, function(key, val) {
-                        choiceContainer.append("<br/><input type='checkbox' name='" + key +
-                                "' checked='checked' id='id" + key + "'></input>" +
-                                "<label for='id" + key + "'>"
-                                + val.label + "</label>");
+                        choiceContainer.append("<p class='service-label' name='" + val.serviceName + "'>" + val.serviceName + "</p>");
+                        choiceContainer.append("<div style='width:900px;height:400px'></div>");
                     });
 
-                    choiceContainer.find("input").click(plotAccordingToChoices);
+                    var serviceSelector = $("#service-selector");
+                    serviceSelector.find("input").click(plotAccordingToChoice);
+
+                    function arrayContainsValue(arr, val) {
+                        for (var i = 0; i < arr.length; i++) {
+                            if (arr[i].serviceName == val) {
+                                return arr[i].data;
+                            }
+                        }
+                        return null;
+                    }
+
+                    function plotAccordingToChoice() {
+                        var serviceName = $(this).attr("name");
+                        var div = $("p.service-label[name=" + serviceName + "]").next();
+                        if ($(this).is(':checked')) {
+                            div.show();
+                        } else {
+                            div.hide();
+                        }
+                    }
 
                     function plotAccordingToChoices() {
 
                         var data = [];
 
-                        choiceContainer.find("input:checked").each(function () {
-                            var key = $(this).attr("name");
-                            if (key && series[key]) {
-                                data.push(series[key]);
+                        choiceContainer.find("p.service-label").each(function () {
+                            var key = $(this).text();
+                            if (key) {
+                                var value = arrayContainsValue(series, key);
+                                if (value) {
+                                    var data = [];
+
+                                    for (var i = 0; i < value.length; i++) {
+                                        data.push(value[i]);
+                                    }
+
+                                    if (data.length > 0) {
+                                        $.plot($(this).next(), data, {
+                                        yaxis: {
+                                            min: 0
+                                        },
+                                        xaxis: {
+                                            tickDecimals: 0
+                                        }
+                                        });
+                                    }
+                                }
                             }
                         });
 
-                        if (data.length > 0) {
-                            $.plot("#placeholder", data, {
-                                yaxis: {
-                                    min: 0
-                                },
-                                xaxis: {
-                                    tickDecimals: 0
-                                }
-                            });
-                        }
                     }
 
                     plotAccordingToChoices();
-
-                    //$.plot("#placeholder", series, options);
                 }
 
                 $.ajax({
@@ -110,10 +126,48 @@
 
     <hr>
 
-    <div class="demo-container">
-        <div id="placeholder" class="demo-placeholder" style="float:left; width:675px;"></div>
-        <p id="choices" style="float:right; width:135px;"></p>
-    </div>
+    <table style="font-size:12px;width:100%" id="service-selector">
+        <tr valign="middle">
+            <td>
+                <input type='checkbox' name='quotePurchased' checked='checked' id='idquotePurchased' style="vertical-align: middle"/>
+                <label for='idquotePurchased'><span style="vertical-align: middle">quotePurchased</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='set-sky-id' checked='checked' id='idset-sky-id' style="vertical-align: middle"/>
+                <label for='idset-sky-id'><span style="vertical-align: middle">set-sky-id</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='add-address' checked='checked' id='idadd-address' style="vertical-align: middle"/>
+                <label for='idadd-address'><span style="vertical-align: middle">add-address</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='set-voice-activation-date' checked='checked' id='idset-voice-activation-date' style="vertical-align: middle"/>
+                <label for='idset-voice-activation-date'><span style="vertical-align: middle">set-voice-activation-date</span></label>
+            </td>
+        </tr>
+        <tr valign="middle">
+            <td>
+                <input type='checkbox' name='set-prospect-date-of-birth' checked='checked' id='idset-prospect-date-of-birth' style="vertical-align: middle"/>
+                <label for='idset-prospect-date-of-birth'><span style="vertical-align: middle">set-prospect-date-of-birth</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='set-tv-installation-appointment' checked='checked' id='idset-tv-installation-appointment' style="vertical-align: middle"/>
+                <label for='idset-tv-installation-appointment'><span style="vertical-align: middle">set-tv-installation-appointment</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='payments/recurring/directdebit' checked='checked' id='idpayments/recurring/directdebit' style="vertical-align: middle"/>
+                <label for='idpayments/recurring/directdebit'><span style="vertical-align: middle">payments/recurring/directdebit</span></label>
+            </td>
+            <td>
+                <input type='checkbox' name='set-directory-listing-preference' checked='checked' id='idset-directory-listing-preference' style="vertical-align: middle"/>
+                <label for='idset-directory-listing-preference'><span style="vertical-align: middle">set-directory-listing-preference</span></label>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <p id="choices"></p>
 
 </div>
 

@@ -5,19 +5,23 @@ import model.LogEntry
 
 object LogProcessor {
 
-  def groupByServiceName(timings: ArrayBuffer[LogEntry]) : List[(String, ArrayBuffer[LogEntry])] = {
-    val timingsGroupedByServiceName : List[(String, ArrayBuffer[LogEntry])] = timings.groupBy(_.serviceName).toList
+  def groupByServiceName(timings: ArrayBuffer[LogEntry]) = {
 
-    timingsGroupedByServiceName.foreach{
-      case (service, lst) => {
-        val skew = 60 - lst(0).getMinute()
-        lst.foreach{
-          item => item.setMinute((item.getMinute() + skew) % 60)
+    val timingsGrouped = timings.groupBy(_.serviceName).mapValues(_.groupBy(_.getLegAndServer()).toList).toList
+
+    timingsGrouped.foreach{
+      case (service, rest) => {
+        rest.foreach{
+          case (legAndServer, lst) =>
+            lst.foreach{
+              val skew =  240000 - lst(0).getTime()
+              item => item.setTime((item.getTime() + skew) % 240000)
+            }
         }
       }
     }
 
-    timingsGroupedByServiceName
+    timingsGrouped
   }
 
 }

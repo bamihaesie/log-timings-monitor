@@ -21,15 +21,12 @@ object Crawler {
       if (tr.nonEmptyChildren.size == 4) {
         val fileName = tr.nonEmptyChildren(1).nonEmptyChildren(0).attribute("href").get.toString()
         if (fileName.startsWith("tomcat")) {
-          println(fileName)
           lst.append(fileName.toString())
         }
       }
     }
 
-    println(lst.toList)
     lst.toList
-//    List("tomcat-ocp.2013-04-15_07-32-46_1366007566.log")
   }
 
 }

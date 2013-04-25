@@ -1,6 +1,12 @@
-@(timings: List[(String, collection.mutable.ArrayBuffer[model.LogEntry])])
+@(timings: List[(String, List[(String, collection.mutable.ArrayBuffer[model.LogEntry])])])
 
 [@for(t <- timings) {
-  { "label" : "@t._1", "data" : [@for((e,i) <- t._2.zipWithIndex) {[@e.getMinute, @e.duration]@if(i != t._2.size - 1) {,}}]
+  { "serviceName" : "@t._1",
+    "data" : [
+        @for((item, ind) <- t._2.zipWithIndex) {{
+            "label" : "@item._1",
+            "data" : [@for((e,i) <- item._2.zipWithIndex) {[@e.getTime, @e.duration]@if(i != item._2.size - 1) {,}}]}@if(ind != t._2.size - 1) {,}
+        }
+    ]
   }@if(timings(timings.size - 1) != t){,}
 }]
