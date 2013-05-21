@@ -22,14 +22,18 @@ object RestController extends Controller {
       legs.foreach { leg =>
         servers.foreach { server =>
           val urls: List[String] = Crawler.extractLogFileNames(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server))
-          urls.foreach{ url =>
+          urls.foreach { url =>
             timings.appendAll(LogParser.extractTimingsFromUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + url, leg,server))
           }
         }
       }
     } else {
       val tarFileName = "_archive/" + range + ".tar.gz";
-      println(tarFileName)
+      legs.foreach { leg =>
+        servers.foreach { server =>
+          timings.appendAll(LogParser.extractTimingsFromGzipUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + tarFileName, leg, server))
+        }
+      }
     }
 
     val timingsGroupedByServiceName = LogProcessor.groupByServiceName(timings)

@@ -76,13 +76,17 @@
                                     }
 
                                     if (data.length > 0) {
-                                        $.plot($(this).next(), data, {
-                                        yaxis: {
-                                            min: 0
-                                        },
-                                        xaxis: {
-                                            tickDecimals: 0
-                                        }
+                                        $.plot($(this).next(), data,
+                                        {
+                                            yaxis: {
+                                                min: 0
+                                            },
+                                            xaxis: {
+                                                tickDecimals: 0
+                                            },
+                                            points: {
+                                                show: true
+                                            }
                                         });
                                     }
                                 }
@@ -130,7 +134,7 @@
 
     <hr>
 
-    <table style="font-size:12px;width:100%" id="service-selector">
+    <table style="font-size:12px;width:100%;display:none" id="service-selector">
         <tr valign="middle">
             <td>
                 <input type='checkbox' name='quotePurchased' checked='checked' id='idquotePurchased' style="vertical-align: middle"/>
