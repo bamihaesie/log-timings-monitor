@@ -31,7 +31,11 @@ object RestController extends Controller {
       val tarFileName = "_archive/" + range + ".tar.gz";
       legs.foreach { leg =>
         servers.foreach { server =>
-          timings.appendAll(LogParser.extractTimingsFromGzipUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + tarFileName, leg, server))
+          try {
+            timings.appendAll(LogParser.extractTimingsFromGzipUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + tarFileName, leg, server))
+          } catch {
+            case e: Exception =>
+          }
         }
       }
     }
