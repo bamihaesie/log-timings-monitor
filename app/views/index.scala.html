@@ -7,6 +7,7 @@
     <link href="/assets/stylesheets/flot.css" rel="stylesheet" type="text/css">
     <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/javascripts/flot.js"></script>
+    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.time.js"></script>
 
     <script type="text/javascript">
 
@@ -20,8 +21,7 @@
                     show: false
                 },
                 xaxis: {
-                    tickDecimals: 0,
-                    tickSize: 10
+                    mode: "time"
                 }
             };
 
@@ -82,7 +82,9 @@
                                                 min: 0
                                             },
                                             xaxis: {
-                                                tickDecimals: 0
+                                                mode: "time",
+                                                minTickSize: [1, "hour"],
+                                                twelveHourClock: true
                                             },
                                             points: {
                                                 show: true

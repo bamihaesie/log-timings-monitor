@@ -14,8 +14,9 @@ object LogProcessor {
         rest.foreach{
           case (legAndServer, lst) =>
             lst.foreach{
-              val skew =  240000 - lst(0).getTime()
-              item => item.setTime((item.getTime() + skew) % 240000)
+//              val skew =  240000// - lst(0).getTime()
+//              item => item.setTime((item.getTime() + skew) % 240000)
+                item => item.setTime(item.getTime())
             }
         }
       }

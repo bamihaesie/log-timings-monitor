@@ -25,9 +25,9 @@ object LogParser {
     source.getLines() foreach { line =>
       if (line.contains("took")) {
         try {
-          val M = """.* \[\d+ \S+ \d+ (\S+)] .* (\S+) took ([\d,]+)ms.*""".r
+          val M = """.* \[(\d+ \S+ \d+ \S+)] .* (\S+) took ([\d,]+)ms.*""".r
           val M (timestamp, serviceName, duration) = line
-          val entry = new LogEntry(serviceName.replaceAll(",", ""), timestamp, leg, server, duration.replaceAll(",", "").toLong)
+          val entry = new LogEntry(serviceName.replaceAll(",", ""), timestamp, leg, server, duration.replaceAll(",", "").toDouble / 1000)
           list.+=(entry)
         } catch {
           case e : Exception =>
