@@ -5,10 +5,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Log Timings Monitor</title>
     <link href="/assets/stylesheets/flot.css" rel="stylesheet" type="text/css">
+    <link href="/assets/stylesheets/jquery.fancybox.css" rel="stylesheet" type="text/css">
     <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/javascripts/flot.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.time.js"></script>
     <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.symbol.js"></script>
+    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.fancybox.js"></script>
 
     <script type="text/javascript">
 
@@ -113,6 +115,29 @@
         });
 
     </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('a#inline').bind("ajaxSend", function() {
+                $(this).click();
+            }).bind("ajaxComplete", function() {
+                $.fancybox.close();
+            });
+
+            $("a#inline").fancybox({
+                closeClick  : false,
+                helpers   : {
+                    overlay : {
+                        closeClick: false,
+                        opacity: 0.3
+                    }
+                }
+            });
+
+        });
+    </script>
+
 </head>
 <body>
 
@@ -180,6 +205,18 @@
     <hr>
 
     <p id="choices"></p>
+
+    <a id="inline" href="#data"></a>
+
+    <div style="display:none">
+        <div id="data">
+            Please wait while data is being retrieved from the server
+            <br/><br/>
+            <center>
+                <img src="/assets/images/fancybox_loading.gif"/>
+            </center>
+        </div>
+    </div>
 
 </div>
 
