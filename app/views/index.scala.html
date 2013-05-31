@@ -1,224 +1,76 @@
 @(args: IndexedSeq[String])
 
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Log Timings Monitor</title>
-    <link href="/assets/stylesheets/flot.css" rel="stylesheet" type="text/css">
-    <link href="/assets/stylesheets/jquery.fancybox.css" rel="stylesheet" type="text/css">
-    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.js"></script>
-    <script language="javascript" type="text/javascript" src="/assets/javascripts/flot.js"></script>
-    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.time.js"></script>
-    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.symbol.js"></script>
-    <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.fancybox.js"></script>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <script type="text/javascript">
+        <title>Log Timings Monitor</title>
 
-        $(function() {
+        <link href="/assets/stylesheets/flot.css" rel="stylesheet" type="text/css">
+        <link href="/assets/stylesheets/jquery.fancybox.css" rel="stylesheet" type="text/css">
 
-            var options = {
-                lines: {
-                    show: true
-                },
-                points: {
-                    show: false
-                },
-                xaxis: {
-                    mode: "time"
-                }
-            };
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.js"></script>
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/flot.js"></script>
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.time.js"></script>
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.flot.symbol.js"></script>
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/jquery.fancybox.js"></script>
+        <script language="javascript" type="text/javascript" src="/assets/javascripts/main.js"></script>
+    </head>
 
-            $("button.dataUpdate").click(function () {
+    <body>
 
-                range = $("#range-selector").find(":selected").val();
+        <div id="content">
 
-                function onDataReceived(series) {
+            <center><h3>Log Timings Monitor</h3></center>
 
-                    var choiceContainer = $("#choices");
+            <hr>
 
-                    $.each(series, function(key, val) {
-                        choiceContainer.append("<p class='service-label' name='" + val.serviceName + "'>" + val.serviceName + "</p>");
-                        choiceContainer.append("<div style='width:900px;height:400px'></div>");
-                    });
-
-                    var serviceSelector = $("#service-selector");
-                    serviceSelector.find("input").click(plotAccordingToChoice);
-
-                    function arrayContainsValue(arr, val) {
-                        for (var i = 0; i < arr.length; i++) {
-                            if (arr[i].serviceName == val) {
-                                return arr[i].data;
+            <table cellspacing="10" cellpadding="10">
+                <tr>
+                    <td>Range:</td>
+                    <td>
+                        <select id="range-selector">
+                            @for((item, ind) <- args.zipWithIndex) {
+                                <option value="@item">@item</option>
                             }
-                        }
-                        return null;
-                    }
+                        </select>
+                    </td>
+                    <td><button class="dataUpdate">Extract Timings</button></td>
+                </tr>
+            </table>
 
-                    function plotAccordingToChoice() {
-                        var serviceName = $(this).attr("name");
-                        var div = $("p.service-label[name=" + serviceName + "]").next();
-                        if ($(this).is(':checked')) {
-                            div.show();
-                        } else {
-                            div.hide();
-                        }
-                    }
+            <div id="serviceNameSelector" style="font-size:11px">
+                <span><input type="checkbox" name="serviceName" value="set-one-off-payment"><label>set-one-off-payment</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-sky-id"><label>set-sky-id</label></span>
+                <span><input type="checkbox" name="serviceName" value="get-debt-status"><label>get-debt-status</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-prospect-date-of-birth"><label>set-prospect-date-of-birth</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-tv-installation-appointment"><label>set-tv-installation-appointment</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-directory-listing-preference"><label>set-directory-listing-preference</label></span><br/>
+                <span><input type="checkbox" name="serviceName" value="get-voice-activation-calendar"><label>get-voice-activation-calendar</label></span>
+                <span><input type="checkbox" name="serviceName" value="get-prospect-status"><label>get-prospect-status</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-marketing-preferences"><label>set-marketing-preferences</label></span>
+                <span><input type="checkbox" name="serviceName" value="get-tv-installation-calendar"><label>get-tv-installation-calendar</label></span>
+                <span><input type="checkbox" name="serviceName" value="get-payment-totals"><label>get-payment-totals</label></span>
+                <span><input type="checkbox" name="serviceName" value="set-prospect-name"><label>set-prospect-name</label></span>
+            </div>
 
-                    function plotAccordingToChoices() {
+            <hr>
 
-                        var data = [];
+            <p id="choices"></p>
 
-                        choiceContainer.find("p.service-label").each(function () {
-                            var key = $(this).text();
-                            if (key) {
-                                var value = arrayContainsValue(series, key);
-                                if (value) {
-                                    var data = [];
+            <a id="inline" href="#data"></a>
 
-                                    for (var i = 0; i < value.length; i++) {
-                                        data.push(value[i]);
-                                    }
+            <div style="display:none">
+                <div id="data">
+                    Please wait while data is being retrieved from the server
+                    <br/><br/>
+                    <center>
+                        <img src="/assets/images/fancybox_loading.gif"/>
+                    </center>
+                </div>
+            </div>
 
-                                    if (data.length > 0) {
-                                        $.plot($(this).next(), data,
-                                        {
-                                            yaxis: {
-                                                min: 0
-                                            },
-                                            xaxis: {
-                                                mode: "time",
-                                                minTickSize: [1, "hour"]
-                                            },
-                                            points: {
-                                                show: true,
-                                                symbol: "cross",
-                                                radius: 2
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-                        });
-
-                    }
-
-                    plotAccordingToChoices();
-                }
-
-                $.ajax({
-                    url: "http://localhost:9000/timings?range=" + range,
-                    type: "GET",
-                    dataType: "json",
-                    success: onDataReceived
-                });
-
-            });
-        });
-
-    </script>
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-
-            $('a#inline').bind("ajaxSend", function() {
-                $(this).click();
-            }).bind("ajaxComplete", function() {
-                $.fancybox.close();
-            });
-
-            $("a#inline").fancybox({
-                closeClick  : false,
-                helpers   : {
-                    overlay : {
-                        closeClick: false,
-                        opacity: 0.3
-                    }
-                }
-            });
-
-        });
-    </script>
-
-</head>
-<body>
-
-<div id="content">
-
-    <center><h3>Log Timings Monitor</h3></center>
-
-    <hr>
-
-    <table cellspacing="10" cellpadding="10">
-        <tr>
-            <td>Range:</td>
-            <td>
-                <select id="range-selector">
-                    @for((item, ind) <- args.zipWithIndex) {
-                        <option value="@item">@item</option>
-                    }
-                </select>
-            </td>
-            <td><button class="dataUpdate">Extract Timings</button></td>
-        </tr>
-    </table>
-
-    <hr>
-
-    <table style="font-size:12px;width:100%;display:none" id="service-selector">
-        <tr valign="middle">
-            <td>
-                <input type='checkbox' name='quotePurchased' checked='checked' id='idquotePurchased' style="vertical-align: middle"/>
-                <label for='idquotePurchased'><span style="vertical-align: middle">quotePurchased</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='set-sky-id' checked='checked' id='idset-sky-id' style="vertical-align: middle"/>
-                <label for='idset-sky-id'><span style="vertical-align: middle">set-sky-id</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='add-address' checked='checked' id='idadd-address' style="vertical-align: middle"/>
-                <label for='idadd-address'><span style="vertical-align: middle">add-address</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='set-voice-activation-date' checked='checked' id='idset-voice-activation-date' style="vertical-align: middle"/>
-                <label for='idset-voice-activation-date'><span style="vertical-align: middle">set-voice-activation-date</span></label>
-            </td>
-        </tr>
-        <tr valign="middle">
-            <td>
-                <input type='checkbox' name='set-prospect-date-of-birth' checked='checked' id='idset-prospect-date-of-birth' style="vertical-align: middle"/>
-                <label for='idset-prospect-date-of-birth'><span style="vertical-align: middle">set-prospect-date-of-birth</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='set-tv-installation-appointment' checked='checked' id='idset-tv-installation-appointment' style="vertical-align: middle"/>
-                <label for='idset-tv-installation-appointment'><span style="vertical-align: middle">set-tv-installation-appointment</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='payments/recurring/directdebit' checked='checked' id='idpayments/recurring/directdebit' style="vertical-align: middle"/>
-                <label for='idpayments/recurring/directdebit'><span style="vertical-align: middle">payments/recurring/directdebit</span></label>
-            </td>
-            <td>
-                <input type='checkbox' name='set-directory-listing-preference' checked='checked' id='idset-directory-listing-preference' style="vertical-align: middle"/>
-                <label for='idset-directory-listing-preference'><span style="vertical-align: middle">set-directory-listing-preference</span></label>
-            </td>
-        </tr>
-    </table>
-
-    <hr>
-
-    <p id="choices"></p>
-
-    <a id="inline" href="#data"></a>
-
-    <div style="display:none">
-        <div id="data">
-            Please wait while data is being retrieved from the server
-            <br/><br/>
-            <center>
-                <img src="/assets/images/fancybox_loading.gif"/>
-            </center>
         </div>
-    </div>
 
-</div>
-
-</body>
+    </body>
 </html>
