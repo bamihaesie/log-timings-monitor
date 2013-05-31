@@ -9,10 +9,8 @@ import org.joda.time.DateTime
 
 object RestController extends Controller {
 
-//  val legs = List("a", "b")
-  val legs = List("b")
-//  val servers = List("03", "04", "05", "06", "07", "08")
-  val servers = List("05")
+  val legs = List("a", "b")
+  val servers = List("03", "04", "05", "06", "07", "08")
   val baseUrl = "http://logs.ocp.bskyb.com/node_logs/chiocp<leg>app<server>.bskyb.com/ocp_tomcat/"
 
   def timings (range: String, services: String) = Action {

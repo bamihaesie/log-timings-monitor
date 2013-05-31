@@ -72,14 +72,34 @@ $(function() {
                                 data.push(value[i]);
                             }
 
+                            var dateTokens = range.split(new RegExp(/-/));
+                            var year = dateTokens[0];
+                            var month = dateTokens[1];
+                            var day = dateTokens[2];
+
+                            var today = new Date();
+                            today.setFullYear(year, month - 1, day);
+                            today.setUTCHours(0);
+                            today.setMinutes(0);
+                            today.setSeconds(0);
+
+                            var tomorrow = new Date();
+                            tomorrow.setDate(today.getDate() + 1);
+                            tomorrow.setUTCHours(0);
+                            tomorrow.setMinutes(0);
+                            tomorrow.setSeconds(0);
+
                             if (data.length > 0) {
                                 $.plot($(this).next(), data, {
                                     yaxis: {
-                                        min: 0
+                                        min: 0.1
                                     },
                                     xaxis: {
                                         mode: "time",
-                                        minTickSize: [1, "hour"]
+                                        timezone: "local",
+                                        minTickSize: [1, "hour"],
+                                        min: today.getTime(),
+                                        max: tomorrow.getTime()
                                     },
                                     points: {
                                         show: true,
