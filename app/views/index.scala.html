@@ -1,4 +1,4 @@
-@(args: IndexedSeq[String])
+@(args: IndexedSeq[String], services: List[String])
 
 <html>
     <head>
@@ -35,23 +35,21 @@
                             }
                         </select>
                     </td>
+                    <td>
+                        <a id="services" href="#serviceNameSelector">Select services...</a>
+                    </td>
                     <td><button class="dataUpdate">Extract Timings</button></td>
                 </tr>
             </table>
 
-            <div id="serviceNameSelector" style="font-size:11px">
-                <span><input type="checkbox" name="serviceName" value="set-one-off-payment"><label>set-one-off-payment</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-sky-id"><label>set-sky-id</label></span>
-                <span><input type="checkbox" name="serviceName" value="get-debt-status"><label>get-debt-status</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-prospect-date-of-birth"><label>set-prospect-date-of-birth</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-tv-installation-appointment"><label>set-tv-installation-appointment</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-directory-listing-preference"><label>set-directory-listing-preference</label></span><br/>
-                <span><input type="checkbox" name="serviceName" value="get-voice-activation-calendar"><label>get-voice-activation-calendar</label></span>
-                <span><input type="checkbox" name="serviceName" value="get-prospect-status"><label>get-prospect-status</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-marketing-preferences"><label>set-marketing-preferences</label></span>
-                <span><input type="checkbox" name="serviceName" value="get-tv-installation-calendar"><label>get-tv-installation-calendar</label></span>
-                <span><input type="checkbox" name="serviceName" value="get-payment-totals"><label>get-payment-totals</label></span>
-                <span><input type="checkbox" name="serviceName" value="set-prospect-name"><label>set-prospect-name</label></span>
+            <div id="serviceNameSelector" style="font-size:11px;display:none;width:500px">
+                <p>
+                    <a id="selectAllServices" href="#">All</a>&nbsp;&nbsp;|&nbsp;
+                    <a id="deselectAllServices" href="#">None</a>
+                </p>
+                @for(service <- services) {
+                    <span style="white-space:nowrap"><input type="checkbox" name="serviceName" value="@service"><label>@service</label></span>
+                }
             </div>
 
             <hr>

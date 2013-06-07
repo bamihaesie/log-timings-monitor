@@ -147,4 +147,23 @@ $(document).ready(function () {
         }
     });
 
+    $('a#services').fancybox({
+         closeClick  : false,
+         closeBtn : true,
+         helpers   : {
+             overlay : {
+                 closeClick: false,
+                 opacity: 0.3
+             }
+         }
+    });
+
+    $('a#selectAllServices').click( function () {
+        $('#serviceNameSelector input').attr('checked', 'checked');
+    });
+
+    $('a#deselectAllServices').click( function () {
+        $('#serviceNameSelector input').removeAttr('checked');
+    });
+
 });
