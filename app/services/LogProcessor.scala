@@ -16,7 +16,7 @@ object LogProcessor {
             lst.foreach{
 //              val skew =  240000// - lst(0).getTime()
 //              item => item.setTime((item.getTime() + skew) % 240000)
-                item => item.setTime(item.getTime())
+                item => LogEntry.create(item.serviceName, item.duration, item.leg, item.server, item.timestamp)
             }
         }
       }

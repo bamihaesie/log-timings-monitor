@@ -5,7 +5,7 @@
     "data" : [
         @for((item, ind) <- t._2.zipWithIndex) {{
             "label" : "@item._1",
-            "data" : [@for((e,i) <- item._2.zipWithIndex) {[@e.getTime, @e.duration]@if(i != item._2.size - 1) {,}}]}@if(ind != t._2.size - 1) {,}
+            "data" : [@for((e,i) <- item._2.zipWithIndex) {[@e.timestamp, @e.duration]@if(i != item._2.size - 1) {,}}]}@if(ind != t._2.size - 1) {,}
         }
     ]
   }@if(timings(timings.size - 1) != t){,}

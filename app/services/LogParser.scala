@@ -1,12 +1,11 @@
 package services
 
 import model.LogEntry
-import java.util
 import io.{BufferedSource, Source}
 import collection.mutable
 import java.util.zip.GZIPInputStream
-import java.io.FileInputStream
 import java.net.URL
+import java.util.Date
 
 object LogParser {
 
@@ -29,8 +28,11 @@ object LogParser {
           val M = """.* \[(\d+ \S+ \d+ \S+)] .* (\S+) took ([\d,]+)ms.*""".r
           val M (timestamp, serviceName, duration) = line
           if ("".equals(services) || isSelected(serviceName.replaceAll(",", ""), selectedServices)) {
-            val entry = new LogEntry(serviceName.replaceAll(",", ""), timestamp, leg, server,
-                                  duration.replaceAll(",", "").toDouble / 1000)
+            val entry = new LogEntry(serviceName.replaceAll(",", ""),
+                                      computeTime(timestamp),
+                                      duration.replaceAll(",", "").toDouble / 1000,
+                                      leg,
+                                      server)
             list.+=(entry)
           }
         } catch {
@@ -39,6 +41,12 @@ object LogParser {
       }
     }
     list
+  }
+
+  def computeTime(timestamp: String) = {
+    val format = new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss")
+    val date: Date = format.parse(timestamp)
+    date.getTime
   }
 
   def isSelected(serviceName: String, services: Array[String]) : Boolean = {
