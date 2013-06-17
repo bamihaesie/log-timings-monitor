@@ -12,7 +12,7 @@ object Application extends Controller {
     Ok(views.html.index(dates, services))
   }
 
-  private def generateNDates(howMany: Integer) = {
+  def generateNDates(howMany: Integer) = {
     val fmt = DateTimeFormat.forPattern("yyyy-MM-dd")
     0 to howMany map (i => DateTime.now.minusDays(i).toString(fmt))
   }

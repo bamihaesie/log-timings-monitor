@@ -6,6 +6,8 @@ import collection.mutable
 import java.util.zip.GZIPInputStream
 import java.net.URL
 import java.util.Date
+import org.joda.time.DateTime
+import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 
 object LogParser {
 
@@ -44,9 +46,8 @@ object LogParser {
   }
 
   def computeTime(timestamp: String) = {
-    val format = new java.text.SimpleDateFormat("dd MMM yyyy HH:mm:ss")
-    val date: Date = format.parse(timestamp)
-    date.getTime
+    val formatter: DateTimeFormatter = DateTimeFormat.forPattern("dd MMM yyyy HH:mm:ss")
+    formatter.parseDateTime(timestamp)
   }
 
   def isSelected(serviceName: String, services: Array[String]) : Boolean = {

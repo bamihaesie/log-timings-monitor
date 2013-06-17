@@ -13,7 +13,7 @@ class LogParserTest extends FunSuite with ShouldMatchers {
 
     test("extract timings") {
       val source: BufferedSource = new BufferedSource(new FileInputStream(new File("test/resources/tomcat-ocp.log.txt")))
-      val timings: ArrayBuffer[LogEntry] = LogParser.extractTimings(source, "", "")
+      val timings: ArrayBuffer[LogEntry] = LogParser.extractTimings(source, "", "", "")
       timings.size should equal (191)
     }
 

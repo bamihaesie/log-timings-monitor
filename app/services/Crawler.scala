@@ -1,32 +1,52 @@
 package services
 
-import scala.xml.Node
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.ArrayBuffer
+import model.LogEntry
+import play.Logger
 
 object Crawler {
 
-  def extractLogFileNames(baseUrl: String) : List[String] = {
+  val legs = List("a", "b")
+  val servers = List("03", "04", "05", "06", "07", "08")
+  val baseUrl = "http://logs.ocp.bskyb.com/node_logs/chiocp<leg>app<server>.bskyb.com/ocp_tomcat/"
+  val map: scala.collection.mutable.Map[String, Boolean] = scala.collection.mutable.Map()
 
-    val parserFactory = new org.ccil.cowan.tagsoup.jaxp.SAXFactoryImpl
-    val parser = parserFactory.newSAXParser()
-    val source = new org.xml.sax.InputSource(baseUrl)
-    val adapter = new scala.xml.parsing.NoBindingFactoryAdapter
-    val root: Node = adapter.loadXML(source, parser)
-
-    val lst : ListBuffer[String] = new ListBuffer[String]
-
-    val table = root.nonEmptyChildren(1).nonEmptyChildren(3)
-    for (i <- 0 to table.nonEmptyChildren.size - 1) {
-      val tr = table.nonEmptyChildren(i)
-      if (tr.nonEmptyChildren.size == 4) {
-        val fileName = tr.nonEmptyChildren(1).nonEmptyChildren(0).attribute("href").get.toString()
-        if (fileName.startsWith("tomcat")) {
-          lst.append(fileName.toString())
+  def incrementalUpdate() = {
+    legs.foreach { leg =>
+      servers.foreach { server =>
+        val timings: ArrayBuffer[LogEntry] = ArrayBuffer[LogEntry]()
+        val urls: List[String] = HtmlCrawler.extractLogFileNames(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server))
+        urls.foreach { url =>
+          if (!map.contains(url)) {
+            map.put(url, true)
+            timings.appendAll(LogParser.extractTimingsFromUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + url, leg, server, ""))
+          }
+        }
+        if (timings.size > 0) {
+          LogEntry.create(timings)
         }
       }
     }
+  }
 
-    lst.toList
+  def update(range: String) = {
+    val tarFileName = "_archive/" + range + ".tar.gz"
+    val timings: ArrayBuffer[LogEntry] = ArrayBuffer[LogEntry]()
+    legs.foreach { leg =>
+      servers.foreach { server =>
+        if (!map.contains(tarFileName + "-" +leg + "-" + server)) {
+          map.put(tarFileName + "-" + leg + "-" + server, true)
+          try {
+            timings.appendAll(LogParser.extractTimingsFromGzipUrl(baseUrl.replaceFirst("<leg>", leg).replaceFirst("<server>", server) + tarFileName, leg, server, ""))
+          } catch {
+            case e: Exception => Logger.error("Error in reading tar file " + tarFileName)
+          }
+        }
+      }
+    }
+    if (timings.size > 0) {
+      LogEntry.create(timings)
+    }
   }
 
 }

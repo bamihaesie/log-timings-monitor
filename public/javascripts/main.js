@@ -20,9 +20,13 @@ $(function() {
         var selectedServices = '';
         $.each($("#serviceNameSelector input"), function() {
             if (this.checked) {
-                selectedServices += this.getAttribute('value') + '|';
+                selectedServices += "'" + this.getAttribute('value') + "',";
             }
         });
+        var len = selectedServices.length;
+        if (selectedServices.substr(len - 1, 1) == ",") {
+            selectedServices = selectedServices.substring(0, len - 1);
+        }
 
         function onDataReceived(series) {
 
