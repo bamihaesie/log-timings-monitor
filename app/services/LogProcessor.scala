@@ -1,13 +1,14 @@
 package services
 
-import scala.collection.mutable.ArrayBuffer
 import model.LogEntry
 
 object LogProcessor {
 
   def groupByServiceName(timings: List[LogEntry]) = {
 
-    val timingsGrouped = timings.groupBy(_.serviceName).mapValues(_.groupBy(_.getLegAndServer()).toList).toList
+    val timingsGrouped = timings.groupBy(_.serviceName)
+                                .mapValues(_.groupBy(_.getLegAndServer()).toList)
+                                .toList
 
     timingsGrouped.foreach{
       case (service, rest) => {

@@ -21,7 +21,7 @@ object HtmlCrawler {
       if (tr.nonEmptyChildren.size == 4) {
         val fileName = tr.nonEmptyChildren(1).nonEmptyChildren(0).attribute("href").get.toString()
         if (fileName.startsWith("tomcat")) {
-          lst.append(fileName.toString())
+          lst.append(fileName.toString)
         }
       }
     }

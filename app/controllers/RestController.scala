@@ -1,12 +1,8 @@
 package controllers
 
 import play.api.mvc._
-import services.{LogProcessor, HtmlCrawler, LogParser}
+import services.LogProcessor
 import model.LogEntry
-import collection.mutable.ArrayBuffer
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.DateTime
-import java.sql.Timestamp
 
 object RestController extends Controller {
 

@@ -6,10 +6,10 @@ import anorm._
 
 object AnormExtension {
 
-  val dateFormatGeneration: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSS");
+  val dateFormatGeneration: DateTimeFormatter = DateTimeFormat.forPattern("yyyyMMddHHmmssSS")
 
   implicit def rowToDateTime: Column[DateTime] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
+    val MetaDataItem(_, _, _) = meta
     value match {
       case ts: java.sql.Timestamp => Right(new DateTime(ts.getTime))
       case d: java.sql.Date => Right(new DateTime(d.getTime))
@@ -19,8 +19,8 @@ object AnormExtension {
   }
 
   implicit val dateTimeToStatement = new ToStatement[DateTime] {
-    def set(s: java.sql.PreparedStatement, index: Int, aValue: DateTime): Unit = {
-      s.setTimestamp(index, new java.sql.Timestamp(aValue.withMillisOfSecond(0).getMillis()) )
+    def set(s: java.sql.PreparedStatement, index: Int, aValue: DateTime) {
+      s.setTimestamp(index, new java.sql.Timestamp(aValue.withMillisOfSecond(0).getMillis) )
     }
   }
 

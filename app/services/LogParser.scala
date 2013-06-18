@@ -5,8 +5,6 @@ import io.{BufferedSource, Source}
 import collection.mutable
 import java.util.zip.GZIPInputStream
 import java.net.URL
-import java.util.Date
-import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormatter, DateTimeFormat}
 
 object LogParser {
@@ -53,9 +51,9 @@ object LogParser {
   def isSelected(serviceName: String, services: Array[String]) : Boolean = {
     services.foreach { service =>
       if (serviceName.equals(service)) {
-        return true;
+        return true
       }
     }
-    return false;
+    false
   }
 }

@@ -11,7 +11,7 @@ object Crawler {
   val baseUrl = "http://logs.ocp.bskyb.com/node_logs/chiocp<leg>app<server>.bskyb.com/ocp_tomcat/"
   val map: scala.collection.mutable.Map[String, Boolean] = scala.collection.mutable.Map()
 
-  def incrementalUpdate() = {
+  def incrementalUpdate() {
     legs.foreach { leg =>
       servers.foreach { server =>
         val timings: ArrayBuffer[LogEntry] = ArrayBuffer[LogEntry]()
@@ -29,7 +29,7 @@ object Crawler {
     }
   }
 
-  def update(range: String) = {
+  def update(range: String) {
     val tarFileName = "_archive/" + range + ".tar.gz"
     val timings: ArrayBuffer[LogEntry] = ArrayBuffer[LogEntry]()
     legs.foreach { leg =>

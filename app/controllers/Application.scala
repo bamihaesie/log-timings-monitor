@@ -2,13 +2,13 @@ package controllers
 
 import play.api.mvc._
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.joda.time.format.DateTimeFormat
 
 object Application extends Controller {
   
   def index = Action {
     val dates = generateNDates(10)
-    val services = getServiceList()
+    val services = getServiceList
     Ok(views.html.index(dates, services))
   }
 
@@ -17,7 +17,7 @@ object Application extends Controller {
     0 to howMany map (i => DateTime.now.minusDays(i).toString(fmt))
   }
 
-  private def getServiceList() = {
+  private def getServiceList = {
     List(
       "set-one-off-payment",
       "set-sky-id",
