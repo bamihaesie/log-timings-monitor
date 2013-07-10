@@ -117,8 +117,10 @@ $(function() {
             plotAccordingToChoices();
         }
 
+        var hostname = 'log-timings-monitor-v1.nimbus-04.cg.bskyb.com';
+
         $.ajax({
-            url: "http://localhost:9000/timings?range=" + range + "&services=" + selectedServices,
+            url: "http://" + hostname + "/timings?range=" + range + "&services=" + selectedServices,
             type: "GET",
             dataType: "json",
             success: onDataReceived
